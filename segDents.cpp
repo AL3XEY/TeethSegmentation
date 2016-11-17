@@ -147,6 +147,16 @@ int cpt=0;
 						
 			/* The MPR image has a given size. It needs to be resized in order to fit at best in the display window */
 			mpr_img2.resize(img.width(),img.height()); 
+		
+			//pixel values are between 0 and 4095
+			
+			//2D Mean filter
+			int meanMaskDimension = 3;
+			CImg<unsigned char> meanMask(meanMaskDimension,meanMaskDimension,1,1,0);
+			meanMask.fill(1);
+			mpr_img2.convolve(meanMask);
+			
+			
 			
 			/* Display the MPR image in the display windows */
 			disp.display(mpr_img2);

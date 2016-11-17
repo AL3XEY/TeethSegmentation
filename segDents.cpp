@@ -25,7 +25,11 @@ int main(int argc,char **argv)
 	CImg<unsigned short> img;
 	float voxelsize[3];
 	/* Load in Analyze format and get the voxel size in an array */
-	img.load_analyze(argv[1],voxelsize);	
+	img.load_analyze(argv[1],voxelsize);
+	
+	//resampling
+	img = img.resize(img.width(), img.height(), 230);
+		
 	/* Get the image dimensions */
     unsigned int dim[]={img.width(),img.height(),img.depth()}; 
 	printf("Reading %s. Dimensions=%d %d %d\n",argv[1],dim[0],dim[1],dim[2]);

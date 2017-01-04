@@ -25,7 +25,11 @@ int main(int argc,char **argv)
 	CImg<unsigned short> img;
 	float voxelsize[3];
 	/* Load in Analyze format and get the voxel size in an array */
-	img.load_analyze(argv[1],voxelsize);	
+	img.load_analyze(argv[1],voxelsize);
+	
+	//resampling
+	img = img.resize(img.width(), img.height(), 230);
+		
 	/* Get the image dimensions */
     unsigned int dim[]={img.width(),img.height(),img.depth()}; 
 	printf("Reading %s. Dimensions=%d %d %d\n",argv[1],dim[0],dim[1],dim[2]);
@@ -169,6 +173,16 @@ int cpt=0;
 						
 			/* The MPR image has a given size. It needs to be resized in order to fit at best in the display window */
 			mpr_img2.resize(img.width(),img.height()); 
+		
+			//pixel values are between 0 and 4095
+			
+			//2D Mean filter
+			int meanMaskDimension = 3;
+			CImg<unsigned char> meanMask(meanMaskDimension,meanMaskDimension,1,1,0);
+			meanMask.fill(1);
+			mpr_img2.convolve(meanMask);
+			
+			
 			
 			/* Display the MPR image in the display windows */
 			disp.display(mpr_img2);

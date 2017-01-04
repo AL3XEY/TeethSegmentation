@@ -51,6 +51,28 @@ int main(int argc,char **argv)
 	/* For a first drawing, activate the redrawing */
 	bool redraw=true;
 	
+	
+	//  1ere etape : application du filtre median
+	img=img.get_blur_median(1);
+	
+	//ici on cree notre MIP  selon Y
+	unsigned short currentMax=0;
+	
+	
+	CImg<unsigned short> MIPy(img.width(),img.depth(),1);
+	for(int i=0 ; i < img.width() ; i++){
+	    
+	    for(int j=0 ; j < img.depth(); j++){
+	        currentMax=0;
+	         for(int k=0 ; k < img.width(); k++){
+	            if( currentMax < img(k,i,j) )
+                    currentMax=img(k,i,j)	    ;
+	        
+	        }
+	        MIPy(j,i,0)=currentMax;
+	    }
+	}
+	MIPy.save_analyze("MIPy.img",voxelsize);
 
 	/* Manage the display windows: ESC, or closed -> close the main window*/
 	while (!disp.is_closed() && !disp.is_keyESC()) // main loop

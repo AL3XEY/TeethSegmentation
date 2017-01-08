@@ -57,7 +57,7 @@ int main(int argc,char **argv)
 	
 	
 	//  1ere etape : application du filtre median
-	img=img.get_blur_median(1);
+	//img=img.get_blur_median(1);
 	
 	//ici on cree notre MIP  selon Y
 	unsigned short currentMax=0;
@@ -68,12 +68,12 @@ int main(int argc,char **argv)
 	    
 	    for(int j=0 ; j < img.depth(); j++){
 	        currentMax=0;
-	         for(int k=0 ; k < img.width(); k++){
-	            if( currentMax < img(k,i,j) )
-                    currentMax=img(k,i,j)	    ;
+	         for(int k=0 ; k < img.height(); k++){
+	            if( currentMax < img(i,k,j) )
+                    currentMax=img(i,k,j)	    ;
 	        
 	        }
-	        MIPy(j,i,0)=currentMax;
+	        MIPy(i,j,0)=currentMax;
 	    }
 	}
 	MIPy.save_analyze("MIPy.img",voxelsize);
@@ -106,7 +106,7 @@ int main(int argc,char **argv)
 		redraw = true;
 		
         /* - Click Right button */
-		if (disp.button())  
+/*		if (disp.button())  
 		{
             const int y = disp.mouse_y();const int x = disp.mouse_x();
             const int z = displayedSlice[2];
@@ -115,7 +115,7 @@ int main(int argc,char **argv)
             // on a recupere le clic il faut faire le traitement
             CImg<unsigned short> nimg;
             unsigned char col[]={254};
-
+*/
                 /* pour determiner teta end
                 for(int i=1;i<40;i++){
                 img.draw_fill(x,y,z,col,1,nimg,i);
@@ -130,7 +130,7 @@ int main(int argc,char **argv)
                 printf("%d %d\n",i,cpt);
                 }*/
             //j'ai calculé 32 sur le graphe
-            img.draw_fill(x,y,z,col,1,nimg,atoi(argv[2]));
+/*            img.draw_fill(x,y,z,col,1,nimg,atoi(argv[2]));
             img=nimg;
 int cpt=0;
  cimg_for(nimg,val,unsigned short)
@@ -142,7 +142,7 @@ int cpt=0;
                 printf("%d \n",cpt);
 			redraw = true;
 		}
-
+*/
 		/* - Wheel interaction */
 		if (disp.wheel()) 
 		{

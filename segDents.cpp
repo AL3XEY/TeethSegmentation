@@ -68,7 +68,6 @@ int main(int argc,char **argv)
 	//ici on cree notre MIP  selon Y
 	unsigned short currentMax=0;
 	
-	
 	CImg<unsigned short> MIPy(img.height(),img.depth());
 	for(int i=0 ; i < img.height() ; i++){
 	    
@@ -84,6 +83,44 @@ int main(int argc,char **argv)
 	}
 	
 	MIPy.save_analyze("MIPy.img",voxelsize);
+	
+	for(int i=0 ; i < img.height() ; i++){
+	    
+	    for(int j=0 ; j < img.depth(); j++){
+            if( MIPy(i,j) < 2048 )
+                MIPy(i,j) = 0;
+	    }
+	}
+ 	//MIPy.save_analyze("MIPy2.img",voxelsize);
+ 	
+ 	/*CImg<unsigned short> maxilla(img.width(),img.height(), img.depth());
+ 	CImg<unsigned short> mandible(img.width(),img.height(), img.depth());
+ 	
+ 	for(int x=0 ; x < img.width() ; x++){
+	    for(int y=0 ; y < img.height(); y++){
+	         for(int z=0 ; z < img.depth(); z++){
+	            maxilla(x,y,z)=
+	            mandible(x,y,z)=
+	        }
+	    }
+	}*/
+	
+	//MIP in Z
+	/*currentMax=0;
+	CImg<unsigned short> MIPz(img.width(),img.height());
+	for(int i=0 ; i < img.width() ; i++){
+	    
+	    for(int j=0 ; j < img.height(); j++){
+	        currentMax=0;
+	         for(int k=0 ; k < img.depth(); k++){
+	            if( currentMax < img(i,j,k) )
+                    currentMax=img(i,j,k)	    ;
+	        
+	        }
+	        MIPz(i,j)=currentMax;
+	    }
+	}
+	MIPz.save_analyze("MIPz.img",voxelsize);*/
 
 	/* Manage the display windows: ESC, or closed -> close the main window*/
 	while (!disp.is_closed() && !disp.is_keyESC()) // main loop
@@ -198,6 +235,6 @@ int cpt=0;
 			redraw=false;
 		}
 	}
-    img.save_analyze("result.img",voxelsize);
+    //img.save_analyze("result.img",voxelsize);
 	return 0;
 }

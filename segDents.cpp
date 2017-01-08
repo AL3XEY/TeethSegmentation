@@ -57,7 +57,7 @@ int main(int argc,char **argv)
 	
 	
 	//  1ere etape : application du filtre median
-	//img=img.get_blur_median(1);
+	img=img.get_blur_median(1);
 	
 	//3D Mean filter
 	/*int meanMaskDimension = 3;

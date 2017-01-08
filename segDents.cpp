@@ -59,23 +59,30 @@ int main(int argc,char **argv)
 	//  1ere etape : application du filtre median
 	//img=img.get_blur_median(1);
 	
+	//3D Mean filter
+	/*int meanMaskDimension = 3;
+	CImg<unsigned char> meanMask(meanMaskDimension,meanMaskDimension,meanMaskDimension,1,0);
+	meanMask.fill(1);
+	img.convolve(meanMask);*/
+	
 	//ici on cree notre MIP  selon Y
 	unsigned short currentMax=0;
 	
 	
-	CImg<unsigned short> MIPy(img.width(),img.depth(),1);
-	for(int i=0 ; i < img.width() ; i++){
+	CImg<unsigned short> MIPy(img.height(),img.depth());
+	for(int i=0 ; i < img.height() ; i++){
 	    
 	    for(int j=0 ; j < img.depth(); j++){
 	        currentMax=0;
-	         for(int k=0 ; k < img.height(); k++){
-	            if( currentMax < img(i,k,j) )
-                    currentMax=img(i,k,j)	    ;
+	         for(int k=0 ; k < img.width(); k++){
+	            if( currentMax < img(k,i,j) )
+                    currentMax=img(k,i,j)	    ;
 	        
 	        }
-	        MIPy(i,j,0)=currentMax;
+	        MIPy(i,j)=currentMax;
 	    }
 	}
+	
 	MIPy.save_analyze("MIPy.img",voxelsize);
 
 	/* Manage the display windows: ESC, or closed -> close the main window*/

@@ -64,6 +64,25 @@ int main(int argc,char **argv)
 	CImg<unsigned char> meanMask(meanMaskDimension,meanMaskDimension,meanMaskDimension,1,0);
 	meanMask.fill(1);
 	img.convolve(meanMask);*/
+	 	//tentative de separer l'image en deux en utilisant une ligne calculée a la main
+ 	CImg<unsigned short> maxilla(img.width(),img.height(), img.depth());
+ 	CImg<unsigned short> mandible(img.width(),img.height(), img.depth());
+ 	int x,y,z;
+	
+	/*for(x = 0 ; x < img.width() ; x++)
+ 	{
+ 	      for( z = 0 ; z < img.depth() ; z++)
+          {       
+                if( z == (int)(0.13 * x + 71.8) ){
+                     	for (y = 0 ; y < img.height() ; y++)
+ 	                    {
+ 	                         
+ 	                        img(x,y,z) = 255 ;
+ 	                    }
+                
+                }
+          }
+ 	}*/
 	
 	//ici on cree notre MIP  selon Y
 	unsigned short currentMax=0;
@@ -89,38 +108,167 @@ int main(int argc,char **argv)
 	    for(int j=0 ; j < img.depth(); j++){
             if( MIPy(i,j) < 2048 )
                 MIPy(i,j) = 0;
+                
 	    }
 	}
- 	//MIPy.save_analyze("MIPy2.img",voxelsize);
+ 	MIPy.save_analyze("MIPy2.img",voxelsize);
  	
- 	/*CImg<unsigned short> maxilla(img.width(),img.height(), img.depth());
- 	CImg<unsigned short> mandible(img.width(),img.height(), img.depth());
+ 	//CImg<unsigned short> MIPy(img.height(),img.depth());
  	
- 	for(int x=0 ; x < img.width() ; x++){
-	    for(int y=0 ; y < img.height(); y++){
-	         for(int z=0 ; z < img.depth(); z++){
-	            maxilla(x,y,z)=
-	            mandible(x,y,z)=
-	        }
-	    }
-	}*/
+ 	
+
+
+ 	//MIPy.save_analyze("MIPy3.img",voxelsize);
+ 	
+ 	//CImg<unsigned short> maxilla(img.width(),img.height(), img.depth());
+ 	//CImg<unsigned short> mandible(img.width(),img.height(), img.depth());
+ 	
+    for(x = 0 ; x < img.width() ; x++)
+ 	{
+ 	      for( z = 0 ; z < img.depth() ; z++)
+          {       
+          
+                
+                for (y = 0 ; y < img.height() ; y++)
+ 	            {
+ 	                if( z > (int)(0.08 * x + 98.2))
+ 	                {
+ 	                   maxilla(x,y,z) = 0;
+ 	                   mandible(x,y,z) = img(x,y,z);;   
+ 	                } 
+ 	                else if ( (z) < (int)(0.08 * x + 98.2)){
+ 	                    maxilla(x,y,z) = img(x,y,z);
+ 	                    mandible(x,y,z) =0 ;
+ 	                    
+ 	               }
+ 	               else{
+ 	                maxilla(x,y,z) =0;
+ 	                mandible(x,y,z) = 0;
+ 	               
+ 	               }
+ 	            }
+                
+                
+          }
+ 	}
+	maxilla.save_analyze("maxilla.img",voxelsize);
+	mandible.save_analyze("mandible.img",voxelsize);
 	
-	//MIP in Z
-	/*currentMax=0;
-	CImg<unsigned short> MIPz(img.width(),img.height());
-	for(int i=0 ; i < img.width() ; i++){
+	/*	
+	for(int i=0 ; i < img.height() ; i++){
 	    
-	    for(int j=0 ; j < img.height(); j++){
+	    for(int j=0 ; j < img.depth(); j++){
 	        currentMax=0;
-	         for(int k=0 ; k < img.depth(); k++){
-	            if( currentMax < img(i,j,k) )
-                    currentMax=img(i,j,k)	    ;
+	         for(int k=0 ; k < img.width(); k++){
+	            if( currentMax < maxilla(k,i,j) )
+                    currentMax=maxilla(k,i,j)	    ;
 	        
 	        }
-	        MIPz(i,j)=currentMax;
+	        MIPy(i,j)=currentMax;
 	    }
 	}
-	MIPz.save_analyze("MIPz.img",voxelsize);*/
+	*/
+	
+	/*
+	MIPy.save_analyze("MIPy.img",voxelsize);
+		for(int i=0 ; i < img.height() ; i++){
+	    
+	    for(int j=0 ; j < img.depth(); j++){
+	        currentMax=0;
+	         for(int k=0 ; k < img.width(); k++){
+	            if( currentMax < mandible(k,i,j) )
+                    currentMax=mandible(k,i,j)	    ;
+	        
+	        }
+	        MIPy(i,j)=currentMax;
+	    }
+	}
+	
+	MIPy.save_analyze("MIPy2.img",voxelsize);*/
+	
+	//MIP in Z
+	currentMax=0;
+	CImg<unsigned short> MIPzMaxilla(maxilla.width(),maxilla.height());
+	for(int i=0 ; i < maxilla.width() ; i++){
+	    
+	    for(int j=0 ; j < maxilla.height(); j++){
+	        currentMax=0;
+	         for(int k=0 ; k < maxilla.depth(); k++){
+	            if( currentMax < maxilla(i,j,k) )
+                    currentMax=maxilla(i,j,k)	    ;
+	        
+	        }
+	        MIPzMaxilla(i,j)=currentMax;
+	    }
+	}
+	MIPzMaxilla.save_analyze("MIPzMaxilla.img",voxelsize);
+	
+	currentMax=0;
+	CImg<unsigned short> MIPzMandible(mandible.width(),mandible.height());
+	for(int i=0 ; i < mandible.width() ; i++){
+	    
+	    for(int j=0 ; j < mandible.height(); j++){
+	        currentMax=0;
+	         for(int k=0 ; k < mandible.depth(); k++){
+	            if( currentMax < mandible(i,j,k) )
+                    currentMax=mandible(i,j,k)	    ;
+	        
+	        }
+	        MIPzMandible(i,j)=currentMax;
+	    }
+	}
+	MIPzMandible.save_analyze("MIPzMandible.img",voxelsize);
+	
+	//Threshold
+	
+	MIPzMaxilla.threshold(3600); //TODO test
+	MIPzMandible.threshold(4094);
+	
+	MIPzMaxilla.save_analyze("MIPzMaxillaThresholded.img",voxelsize);
+	MIPzMandible.save_analyze("MIPzMandibleThresholded.img",voxelsize);
+	
+	//Find min and max position values, then crop
+	
+	int xmin=MIPzMaxilla.width(), xmax=0, ymin=MIPzMaxilla.height(), ymax=0;
+	for(int x=0 ; x < MIPzMaxilla.width() ; x++){
+	    for(int y=0 ; y < MIPzMaxilla.height(); y++){
+	        if( MIPzMaxilla(x,y) > 0 ){
+	        	if(x < xmin)
+	        		xmin = x;
+	        	if(x > xmax)
+	        		xmax = x;
+	        	if(y < ymin)
+	        		ymin = y;
+	        	if(y > ymax)
+	        		ymax = y;
+	        }
+	    }
+	}
+	maxilla.crop(xmin, ymin, 0, 0, xmax, ymax, maxilla.depth(), 0);
+	
+	xmin=MIPzMandible.width(), xmax=0, ymin=MIPzMandible.height(), ymax=0;
+	for(int x=0 ; x < MIPzMandible.width() ; x++){
+	    for(int y=0 ; y < MIPzMandible.height(); y++){
+	        if( MIPzMandible(x,y) > 0 ){
+	        	if(x < xmin)
+	        		xmin = x;
+	        	if(x > xmax)
+	        		xmax = x;
+	        	if(y < ymin)
+	        		ymin = y;
+	        	if(y > ymax)
+	        		ymax = y;
+	        }
+	    }
+	}
+	mandible.crop(xmin, ymin, 0, 0, xmax, ymax, mandible.depth(), 0);
+	
+	maxilla.save_analyze("MaxillaCropped.img",voxelsize);
+	mandible.save_analyze("MandibleCropped.img",voxelsize);
+	
+	//Actual teeth segmentation
+	
+	int maxillaTh1, maxillaTh2, maxillaTh3,maxillaTh4, mandibleTh1, mandibleTh2, mandibleTh3, mandibleTh4;
 
 	/* Manage the display windows: ESC, or closed -> close the main window*/
 	while (!disp.is_closed() && !disp.is_keyESC()) // main loop
@@ -219,14 +367,6 @@ int cpt=0;
 			mpr_img2.resize(img.width(),img.height()); 
 		
 			//pixel values are between 0 and 4095
-			
-			//2D Mean filter
-			int meanMaskDimension = 3;
-			CImg<unsigned char> meanMask(meanMaskDimension,meanMaskDimension,1,1,0);
-			meanMask.fill(1);
-			mpr_img2.convolve(meanMask);
-			
-			
 			
 			/* Display the MPR image in the display windows */
 			disp.display(mpr_img2);

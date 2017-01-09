@@ -11,6 +11,8 @@ using namespace cimg_library;
 /* Main program */
 	
 #include "CImg.h"
+#include <vector>
+#include <algorithm>
 using namespace cimg_library;
 int main(int argc,char **argv)
 {
@@ -268,7 +270,37 @@ int main(int argc,char **argv)
 	
 	//Actual teeth segmentation
 	
-	int maxillaTh1, maxillaTh2, maxillaTh3,maxillaTh4, mandibleTh1, mandibleTh2, mandibleTh3, mandibleTh4;
+	int maxillaTh1=4050, maxillaTh2, maxillaTh3, maxillaTh4, mandibleTh1=4050, mandibleTh2, mandibleTh3, mandibleTh4;
+	
+	CImg<unsigned short> MaxillaThreshold(maxilla.width(), maxilla.height(), maxilla.depth());
+	CImg<unsigned short> MandibleThreshold(mandible.width(), mandible.height(), mandible.depth());
+	
+	MaxillaThreshold = maxilla.get_threshold(maxillaTh1);
+	MandibleThreshold = mandible.get_threshold(mandibleTh1);
+	
+	MaxillaThreshold.label();
+	MandibleThreshold.label();
+	
+	unsigned char col[]={4095};
+	int sigma=5;
+	std::vector<CImg<unsigned short> > imgs;
+	std::vector<unsigned short> labels;
+	for(int x=0; x<MaxillaThreshold.width();x++){
+		for(int y=0; y<MaxillaThreshold.height();y++){
+			for(int z=0; z<MaxillaThreshold.depth();z++){
+				if(MaxillaThreshold(x,y,z) != 0 && !(std::find(labels.begin(), labels.end(), MaxillaThreshold(x,y,z)) != labels.end())){
+					CImg<unsigned short> tmpImg;
+					labels.push_back(MaxillaThreshold(x,y,z));
+					maxilla.draw_fill(x,y,z,col,1.0,tmpImg,sigma);
+					imgs.push_back(tmpImg);
+				}
+			}
+		}
+	}
+	
+	printf("%d\n", labels.size());
+	
+	imgs[0].save_analyze("imgs0.img", voxelsize);
 
 	/* Manage the display windows: ESC, or closed -> close the main window*/
 	while (!disp.is_closed() && !disp.is_keyESC()) // main loop
